@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Heart Animation</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Dancing Script', cursive;
+  }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+// Resize handling
+let cx, cy, scaleFactor, fontSize;
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  cx = canvas.width / 2;
+  cy = canvas.height / 2;
+
+  scaleFactor = Math.min(1, Math.min(canvas.width, canvas.height) / 700);
+  fontSize = Math.max(34, Math.min(56, 60 * scaleFactor));
+}
+resize();
+window.addEventListener("resize", resize);
+
+// Text color
+const TEXT_COLOR = "#ff69b4";
+
+// --- HEART math ---
+function hx(t){ return 16 * Math.pow(Math.sin(t),3); }
+function hy(t){ return 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t); }
+
+const heart = [];
+for(let t=0; t<=Math.PI*2; t+=0.01){
+  heart.push({x: hx(t), y: -hy(t)});
+}
+
+// Reorder heart to start from bottom tip
+let bottomIndex = 0;
+for(let i=0;i<heart.length;i++){
+  if(heart[i].y > heart[bottomIndex].y) bottomIndex = i;
+}
+const orderedHeart = [...heart.slice(bottomIndex), ...heart.slice(0,bottomIndex)];
+
+// --- DRAW DOTS ---
+function drawDot(x, y, color, radius=2){
+  ctx.beginPath();
+  ctx.fillStyle = color;
+  ctx.arc(x + (Math.random()-0.5)*2, y + (Math.random()-0.5)*2, radius*scaleFactor, 0, Math.PI*2);
+  ctx.fill();
+}
+
+// --- TOP TEXT ---
+const topText = "To the one and only";
+let topIndex = 0;
+
+function typeTopText() {
+  const textY = cy - 240 * scaleFactor; // slightly higher above heart
+  ctx.font = `${fontSize}px 'Dancing Script', cursive`;
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.textAlign = "center";
+
+  ctx.clearRect(0, textY - fontSize, canvas.width, fontSize + 10);
+  ctx.fillText(topText.slice(0, topIndex), cx, textY);
+
+  topIndex++;
+  if(topIndex <= topText.length){
+    setTimeout(typeTopText, 120);
+  } else {
+    drawHeartDots(); // start heart after top text finishes
+  }
+}
+
+// --- HEART DRAW ---
+let drawIndex = 0;
+function drawHeartDots() {
+  if(drawIndex >= orderedHeart.length/2){
+    typeBottomName();
+    return;
+  }
+
+  for(let i=0;i<6;i++){
+    const a = orderedHeart[drawIndex];
+    const b = orderedHeart[orderedHeart.length - 1 - drawIndex];
+    drawDot(cx + a.x*18*scaleFactor, cy + a.y*18*scaleFactor, "#d8b0ff");
+    drawDot(cx + b.x*18*scaleFactor, cy + b.y*18*scaleFactor, "#bfa0ff");
+  }
+
+  drawIndex++;
+  requestAnimationFrame(drawHeartDots);
+}
+
+// --- BOTTOM NAME ---
+const name = "Joanne Mei";
+let nameIndex = 0;
+
+function typeBottomName(){
+  const heartBottomY = cy + Math.max(...heart.map(p => p.y))*18*scaleFactor;
+  const nameY = heartBottomY + fontSize*1.4;
+
+  ctx.font = `${fontSize}px 'Dancing Script', cursive`;
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.textAlign = "center";
+
+  function drawNextLetter(){
+    ctx.clearRect(0, nameY - fontSize, canvas.width, fontSize + 10);
+    ctx.fillText(name.slice(0,nameIndex), cx, nameY);
+    nameIndex++;
+    if(nameIndex <= name.length){
+      setTimeout(drawNextLetter, 140);
+    } else {
+      pulseHeart();
+    }
+  }
+  drawNextLetter();
+}
+
+// --- HEART PULSE ---
+let pulseTime = 0;
+function pulseHeart(){
+  pulseTime += 0.04;
+  const pulse = 1 + Math.sin(pulseTime)*0.025;
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // redraw top text
+  const textY = cy - 240 * scaleFactor;
+  ctx.font = `${fontSize}px 'Dancing Script', cursive`;
+  ctx.fillStyle = TEXT_COLOR;
+  ctx.textAlign = "center";
+  ctx.fillText(topText, cx, textY);
+
+  // redraw heart
+  for(const p of heart){
+    drawDot(cx + p.x*18*scaleFactor*pulse, cy + p.y*18*scaleFactor*pulse, "#d8b0ff");
+  }
+
+  // redraw bottom name
+  const heartBottomY = cy + Math.max(...heart.map(p => p.y))*18*scaleFactor;
+  const nameY = heartBottomY + fontSize*1.4;
+  ctx.fillText(name, cx, nameY);
+
+  requestAnimationFrame(pulseHeart);
+}
+
+// --- START ---
+typeTopText();
+
+canvas.addEventListener("click", () => {
+  window.location.href = "../main-website/page2.html";
+});
+</script>
+</body>
+</html>

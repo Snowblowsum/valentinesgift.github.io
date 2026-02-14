@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}
+.top-text {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, clamp(-140px, -18vw, -90px));
+  left: 50%;
+  font-family: cursive;
+  color: var(--text-color);
+}
+canvas {
+  display: block;
+}

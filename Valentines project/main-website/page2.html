@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Happy Valentine's Day!</title>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,600&display=swap");
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 62.5%; }
+
+  body {
+    background: linear-gradient(135deg, #f5e0ee, #d5aecb);
+    font-family: "Poppins", sans-serif;
+    color: #4a4a4a;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    z-index: 1;
+  }
+
+  .img {
+    width: auto;
+    height: 28rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease-in-out;
+  }
+  .img:hover { transform: scale(1.03); }
+
+  .title {
+    font-size: 5rem;
+    font-weight: 600;
+    color: hotpink;
+    margin-bottom: 2rem;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .btn {
+    padding: 1.6rem 3rem;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-yes { background-color: #c29fff; color: white; }
+  .btn-no { background-color: #ff4d4d; color: white; }
+
+  /* Fullscreen GIF overlay */
+  #fullscreenGif {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    object-fit: cover;
+    z-index: 9999;
+  }
+</style>
+</head>
+<body>
+
+<main class="container" id="mainContainer">
+  <img class="img" src="https://media.tenor.com/Pr1SLLaw6ssAAAAj/p1.gif" alt="tonton" />
+  <p class="title">Can I have your heart today?</p>
+  <div class="buttons">
+    <button class="btn btn-yes" id="yesBtn">Yes!!</button>
+    <button class="btn btn-no" id="noBtn">No Ew!!</button>
+  </div>
+</main>
+
+<img id="fullscreenGif" />
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const img = document.querySelector(".img");
+const title = document.querySelector(".title");
+const container = document.getElementById("mainContainer");
+const fullscreenGif = document.getElementById("fullscreenGif");
+
+// GIFs for each choice
+const yesGif = "https://media.tenor.com/ACi1vdjNbpIAAAAi/%EC%9C%A0%ED%83%80-%ED%86%A4%ED%86%A4%ED%94%84%EB%A0%8C%EC%A6%88.gif";
+const noGif = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZWlybWpqanhyMDJobzJyZG9pbGVjdWQzdmw5OWI0NHczeW9hbDBzMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6W67mZ5HMIJ6iSNvso/giphy.gif";
+
+// Click handlers
+yesBtn.addEventListener("click", () => {
+  container.style.display = "none";   // hide main page
+  fullscreenGif.src = yesGif;
+  fullscreenGif.style.display = "block";
+});
+
+noBtn.addEventListener("click", () => {
+  container.style.display = "none";   // hide main page
+  fullscreenGif.src = noGif;
+  fullscreenGif.style.display = "block";
+});
+</script>
+
+</body>
+</html>
